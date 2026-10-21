@@ -15,17 +15,18 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html { scroll-behavior: auto; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: #000;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
       color: #000; 
       overflow-x: hidden; 
-      transform: translate3d(0, 0, 0);
     }
 
     /* --- ВИДЕО ФОН НА ВЕСЬ ЭКРАН --- */
@@ -34,20 +35,21 @@
       top: 0; left: 0;
       width: 100vw; 
       height: 100vh;
-      height: 100dvh; /* Учитывает панели браузера на мобилках */
+      height: 100dvh; /* Для мобилок (учитывает адресную строку) */
       z-index: -1;
       overflow: hidden;
-      transform: translateZ(0);
-      will-change: transform;
     }
 
     .bg-video {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Растягивает видео на весь экран */
+      object-fit: cover; /* Растягивает на весь экран */
+      position: absolute;
+      top: 0;
+      left: 0;
     }
 
-    /* Затемнение видео, чтобы кнопки читались */
+    /* Затемнение видео */
     .bg-container::after {
       content: '';
       position: absolute;
@@ -66,6 +68,7 @@
       padding: 250px 20px 60px 20px; 
       position: relative;
       z-index: 2;
+      margin: 0 auto; /* Центрируем по горизонтали */
     }
 
     h1 {
@@ -75,7 +78,7 @@
       color: #1a1a1a;
       text-shadow: 0 4px 15px rgba(255,255,255,0.9); 
       opacity: 0;
-      transform: translateY(20px) translateZ(0);
+      transform: translateY(20px);
       animation: fadeUpLoad 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s forwards;
     }
 
@@ -114,19 +117,17 @@
       cursor: pointer;
       
       opacity: 0;
-      transform: translateY(30px) translateZ(0); 
-      will-change: transform, opacity;
-      backface-visibility: hidden; 
+      transform: translateY(30px); 
+      transition: opacity 0.4s ease-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .link-btn.visible {
       opacity: 1;
-      transform: translateY(0) translateZ(0);
-      transition: opacity 0.4s ease-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: translateY(0);
     }
 
     .link-btn:active {
-      transform: scale(1.05) translateZ(0);
+      transform: scale(1.05);
       background: rgba(255, 255, 255, 0.6);
       transition: transform 0.1s ease-out;
     }
@@ -135,7 +136,7 @@
       position: absolute;
       left: 8px;
       top: 50%;
-      transform: translateY(-50%) translateZ(0); 
+      transform: translateY(-50%); 
       width: 50px; height: 50px;
       border-radius: 50%;
       display: flex;
@@ -166,12 +167,13 @@
     }
 
     @keyframes fadeUpLoad {
-      to { opacity: 1; transform: translateY(0) translateZ(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   
+  <!-- Контейнер для видео -->
   <div class="bg-container">
     <video 
       class="bg-video" 
@@ -186,6 +188,7 @@
     </video>
   </div>
 
+  <!-- Твой контент -->
   <div class="container">
     <h1>@VoiceInsideGalaxy</h1>
     <div class="links" id="links-container"></div>
@@ -226,30 +229,22 @@
         container.appendChild(a);
       });
 
+      // Логика появления
       const buttons = document.querySelectorAll('.link-btn');
-
-      buttons.forEach((btn, index) => {
-        setTimeout(() => {
-          const rect = btn.getBoundingClientRect();
-          if (rect.top < window.innerHeight) {
-            btn.classList.add('visible');
-          }
-        }, index * 150 + 300);
-      });
-
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting && !entry.target.classList.contains('visible')) {
+          if (entry.isIntersecting) {
             entry.target.classList.add('visible');
             observer.unobserve(entry.target); 
           }
         });
-      }, {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
-      });
+      }, { threshold: 0.1 });
 
-      buttons.forEach(btn => observer.observe(btn));
+      buttons.forEach((btn, index) => {
+        // Небольшая задержка для красоты
+        btn.style.transitionDelay = `${index * 0.1}s`;
+        observer.observe(btn);
+      });
     });
   </script>
 </body>
