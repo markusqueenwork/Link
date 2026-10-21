@@ -20,7 +20,6 @@
       background-color: #000;
       color: #000; 
       overflow-x: hidden; 
-      /* Убираем transform у body, чтобы не ломать position: fixed */
     }
 
     /* --- ВИДЕО ФОН НА ВЕСЬ ЭКРАН (ЖЕСТКО) --- */
@@ -28,15 +27,10 @@
       position: fixed;
       top: 0; left: 0;
       width: 100vw; 
-      
-      /* 100lvh — это МАКСИМАЛЬНАЯ высота экрана (без учета скрывающихся панелей браузера).
-         Это заставит видео быть одного размера всегда, без дерганья при скролле. */
       height: 100vh; 
       height: 100lvh; 
-      
       z-index: -1;
       overflow: hidden;
-      /* Ускоряем рендеринг */
       transform: translateZ(0);
       will-change: transform;
     }
@@ -44,7 +38,7 @@
     .bg-video {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Растягивает на весь экран, обрезая края */
+      object-fit: cover; 
       position: absolute;
       top: 0;
       left: 0;
@@ -147,6 +141,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
+    /* Цвета иконок */
     .bg-twitch { background: #9146FF; color: #fff; }
     .bg-boosty { background: #f97316; color: #fff; }
     .bg-donatepay { background: #22c55e; color: #fff; }
@@ -155,7 +150,9 @@
     .bg-youtube { background: #FF0000; color: #fff; }
     .bg-spotify { background: #1DB954; color: #fff; }
     .bg-apple { background: #FA243C; color: #fff; }
+    .bg-linemusic { background: #06C755; color: #fff; }
 
+    /* Спец. стили для картинок и SVG внутри иконок */
     .icon-wrapper img {
       width: 26px; height: 26px;
       display: block; margin: 0 auto; 
@@ -176,6 +173,7 @@
   
   <div class="bg-container">
     <video 
+      id="myVideo"
       class="bg-video" 
       autoplay 
       loop 
@@ -196,38 +194,55 @@
   <script src="links.js"></script>
 
   <script>
+    // --- ЯДЕРНЫЙ ФИКС ДЛЯ ОПЕРЫ ---
+    document.addEventListener("DOMContentLoaded", function() {
+      const video = document.getElementById('myVideo');
+      
+      if (video) {
+        video.muted = true;
+        let playPromise = video.play();
+        
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            // Если браузер заблокировал, запускаем при первом клике/тапе
+            const playOnInteraction = () => video.play();
+            document.body.addEventListener('touchstart', playOnInteraction, { once: true });
+            document.body.addEventListener('click', playOnInteraction, { once: true });
+          });
+        }
+      }
+    });
+
+    // --- ГЕНЕРАЦИЯ КНОПОК ---
     document.addEventListener("DOMContentLoaded", function() {
       const container = document.getElementById('links-container');
-
+      
       myLinks.forEach(link => {
         const a = document.createElement('a');
-        a.href = link.url;
-        a.className = 'link-btn';
-        a.target = '_blank';
+        a.href = link.url; a.className = 'link-btn'; a.target = '_blank';
         
         const iconDiv = document.createElement('div');
         iconDiv.className = `icon-wrapper ${link.colorClass}`;
 
         if (link.type === 'icon') {
-          const i = document.createElement('i');
-          i.className = link.iconClass;
-          iconDiv.appendChild(i);
+          const i = document.createElement('i'); i.className = link.iconClass; iconDiv.appendChild(i);
         } else if (link.type === 'image') {
-          const img = document.createElement('img');
-          img.src = link.imgSrc;
-          img.alt = link.name;
-          iconDiv.appendChild(img);
+          const img = document.createElement('img'); img.src = link.imgSrc; img.alt = link.name; iconDiv.appendChild(img);
         } else if (link.type === 'svg') {
-          iconDiv.innerHTML = `<svg viewBox="0 0 248 248" xmlns="http://www.w3.org/2000/svg"><path d="${link.svgPath}"/></svg>`;
+          if (link.id === 'linemusic') {
+            // Для Line Music рисуем контуром (stroke)
+            iconDiv.innerHTML = `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="fill:none; stroke:#fff; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; width:30px; height:30px;"><path d="${link.svgPath}"/></svg>`;
+          } else {
+            // Для Telegram заливка (fill)
+            iconDiv.innerHTML = `<svg viewBox="0 0 248 248" xmlns="http://www.w3.org/2000/svg"><path d="${link.svgPath}"/></svg>`;
+          }
         }
 
         const textNode = document.createTextNode(link.name);
-        
-        a.appendChild(iconDiv);
-        a.appendChild(textNode);
-        container.appendChild(a);
+        a.appendChild(iconDiv); a.appendChild(textNode); container.appendChild(a);
       });
 
+      // --- ЛОГИКА ПОЯВЛЕНИЯ ---
       const buttons = document.querySelectorAll('.link-btn');
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
