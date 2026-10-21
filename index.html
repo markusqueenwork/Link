@@ -194,33 +194,24 @@
   <script src="links.js"></script>
 
   <script>
-    // --- ЯДЕРНЫЙ ФИКС ДЛЯ ОПЕРЫ ---
     document.addEventListener("DOMContentLoaded", function() {
       const video = document.getElementById('myVideo');
-      
       if (video) {
         video.muted = true;
         let playPromise = video.play();
-        
         if (playPromise !== undefined) {
           playPromise.catch(error => {
-            // Если браузер заблокировал, запускаем при первом клике/тапе
             const playOnInteraction = () => video.play();
             document.body.addEventListener('touchstart', playOnInteraction, { once: true });
             document.body.addEventListener('click', playOnInteraction, { once: true });
           });
         }
       }
-    });
 
-    // --- ГЕНЕРАЦИЯ КНОПОК ---
-    document.addEventListener("DOMContentLoaded", function() {
       const container = document.getElementById('links-container');
-      
       myLinks.forEach(link => {
         const a = document.createElement('a');
         a.href = link.url; a.className = 'link-btn'; a.target = '_blank';
-        
         const iconDiv = document.createElement('div');
         iconDiv.className = `icon-wrapper ${link.colorClass}`;
 
@@ -230,10 +221,8 @@
           const img = document.createElement('img'); img.src = link.imgSrc; img.alt = link.name; iconDiv.appendChild(img);
         } else if (link.type === 'svg') {
           if (link.id === 'linemusic') {
-            // Для Line Music рисуем контуром (stroke)
             iconDiv.innerHTML = `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="fill:none; stroke:#fff; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; width:30px; height:30px;"><path d="${link.svgPath}"/></svg>`;
           } else {
-            // Для Telegram заливка (fill)
             iconDiv.innerHTML = `<svg viewBox="0 0 248 248" xmlns="http://www.w3.org/2000/svg"><path d="${link.svgPath}"/></svg>`;
           }
         }
@@ -242,7 +231,6 @@
         a.appendChild(iconDiv); a.appendChild(textNode); container.appendChild(a);
       });
 
-      // --- ЛОГИКА ПОЯВЛЕНИЯ ---
       const buttons = document.querySelectorAll('.link-btn');
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
