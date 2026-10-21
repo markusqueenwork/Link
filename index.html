@@ -28,23 +28,29 @@
       transform: translate3d(0, 0, 0);
     }
 
+    /* --- ВИДЕО ФОН НА ВЕСЬ ЭКРАН --- */
     .bg-container {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
       z-index: -1;
-      background-image: url('background.jpg');
-      background-size: cover;
-      background-position: center top;
+      overflow: hidden;
       transform: translateZ(0);
       will-change: transform;
     }
 
+    .bg-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Видео заполняет весь экран */
+    }
+
+    /* Затемнение видео, чтобы кнопки читались */
     .bg-container::after {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(to bottom, rgba(224, 234, 245, 0.05) 0%, rgba(224, 234, 245, 0.6) 50%, rgba(224, 234, 245, 0.95) 100%);
+      background: linear-gradient(to bottom, rgba(224, 234, 245, 0.1) 0%, rgba(224, 234, 245, 0.6) 50%, rgba(224, 234, 245, 0.95) 100%);
     }
 
     .container {
@@ -165,7 +171,18 @@
 </head>
 <body>
   
-  <div class="bg-container"></div>
+  <!-- ВИДЕО НА ФОНЕ -->
+  <div class="bg-container">
+    <video 
+      class="bg-video" 
+      src="video.mp4" 
+      autoplay 
+      loop 
+      muted 
+      playsinline
+      poster="background.jpg">
+    </video>
+  </div>
 
   <div class="container">
     
@@ -183,7 +200,6 @@
     document.addEventListener("DOMContentLoaded", function() {
       const container = document.getElementById('links-container');
 
-      // Генерируем HTML для каждой кнопки из файла links.js
       myLinks.forEach(link => {
         const a = document.createElement('a');
         a.href = link.url;
@@ -193,7 +209,6 @@
         const iconDiv = document.createElement('div');
         iconDiv.className = `icon-wrapper ${link.colorClass}`;
 
-        // В зависимости от типа, вставляем нужную иконку
         if (link.type === 'icon') {
           const i = document.createElement('i');
           i.className = link.iconClass;
@@ -214,7 +229,6 @@
         container.appendChild(a);
       });
 
-      // Логика анимаций (каскад + скролл)
       const buttons = document.querySelectorAll('.link-btn');
 
       buttons.forEach((btn, index) => {
