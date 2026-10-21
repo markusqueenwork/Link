@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoiceInsideGalaxy</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html { scroll-behavior: auto; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #d4e0ec;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      color: #000; 
+      overflow-x: hidden; 
+      transform: translate3d(0, 0, 0);
+    }
+
+    .bg-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: -1;
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-position: center top;
+      transform: translateZ(0);
+      will-change: transform;
+    }
+
+    .bg-container::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to bottom, rgba(224, 234, 245, 0.05) 0%, rgba(224, 234, 245, 0.6) 50%, rgba(224, 234, 245, 0.95) 100%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 250px 20px 60px 20px; 
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 30px;
+      color: #1a1a1a;
+      text-shadow: 0 4px 15px rgba(255,255,255,0.9); 
+      opacity: 0;
+      transform: translateY(20px) translateZ(0);
+      animation: fadeUpLoad 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s forwards;
+    }
+
+    .links {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* --- КНОПКИ --- */
+    .link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 12px 20px;
+      
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2));
+      backdrop-filter: blur(12px) saturate(150%); 
+      -webkit-backdrop-filter: blur(12px) saturate(150%); 
+      
+      border: 1px solid rgba(255, 255, 255, 0.8); 
+      border-radius: 35px;
+      color: #000; 
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 600;
+      
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1), 
+        inset 0 2px 10px rgba(255, 255, 255, 0.9), 
+        inset 0 -2px 5px rgba(0, 0, 0, 0.05);
+      
+      height: 68px;
+      cursor: pointer;
+      
+      opacity: 0;
+      transform: translateY(30px) translateZ(0); 
+      will-change: transform, opacity;
+      backface-visibility: hidden; 
+    }
+
+    .link-btn.visible {
+      opacity: 1;
+      transform: translateY(0) translateZ(0);
+      transition: opacity 0.4s ease-out, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .link-btn:active {
+      transform: scale(1.05) translateZ(0);
+      background: rgba(255, 255, 255, 0.6);
+      transition: transform 0.1s ease-out;
+    }
+
+    .icon-wrapper {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%) translateZ(0); 
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Цвета иконок */
+    .bg-twitch { background: #9146FF; color: #fff; }
+    .bg-boosty { background: #f97316; color: #fff; }
+    .bg-donatepay { background: #22c55e; color: #fff; }
+    .bg-telegram { background: #26A5E4; color: #fff; }
+    .bg-tiktok { background: #000000; color: #fff; }
+    .bg-youtube { background: #FF0000; color: #fff; }
+    .bg-spotify { background: #1DB954; color: #fff; }
+    .bg-apple { background: #FA243C; color: #fff; }
+
+    /* Спец. стили для картинок и SVG внутри иконок */
+    .icon-wrapper img {
+      width: 26px; height: 26px;
+      display: block; margin: 0 auto; 
+      filter: brightness(0) invert(1); 
+    }
+
+    .icon-wrapper svg {
+      width: 46px; height: 46px;
+      fill: #fff; display: block; margin: 0 auto; 
+    }
+
+    @keyframes fadeUpLoad {
+      to { opacity: 1; transform: translateY(0) translateZ(0); }
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="bg-container"></div>
+
+  <div class="container">
+    
+    <h1>@VoiceInsideGalaxy</h1>
+
+    <!-- Сюда скрипт вставит все кнопки из links.js -->
+    <div class="links" id="links-container"></div>
+
+  </div>
+
+  <!-- Подключаем файл с данными -->
+  <script src="links.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const container = document.getElementById('links-container');
+
+      // Генерируем HTML для каждой кнопки из файла links.js
+      myLinks.forEach(link => {
+        const a = document.createElement('a');
+        a.href = link.url;
+        a.className = 'link-btn';
+        a.target = '_blank';
+        
+        const iconDiv = document.createElement('div');
+        iconDiv.className = `icon-wrapper ${link.colorClass}`;
+
+        // В зависимости от типа, вставляем нужную иконку
+        if (link.type === 'icon') {
+          const i = document.createElement('i');
+          i.className = link.iconClass;
+          iconDiv.appendChild(i);
+        } else if (link.type === 'image') {
+          const img = document.createElement('img');
+          img.src = link.imgSrc;
+          img.alt = link.name;
+          iconDiv.appendChild(img);
+        } else if (link.type === 'svg') {
+          iconDiv.innerHTML = `<svg viewBox="0 0 248 248" xmlns="http://www.w3.org/2000/svg"><path d="${link.svgPath}"/></svg>`;
+        }
+
+        const textNode = document.createTextNode(link.name);
+        
+        a.appendChild(iconDiv);
+        a.appendChild(textNode);
+        container.appendChild(a);
+      });
+
+      // Логика анимаций (каскад + скролл)
+      const buttons = document.querySelectorAll('.link-btn');
+
+      buttons.forEach((btn, index) => {
+        setTimeout(() => {
+          const rect = btn.getBoundingClientRect();
+          if (rect.top < window.innerHeight) {
+            btn.classList.add('visible');
+          }
+        }, index * 150 + 300);
+      });
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !entry.target.classList.contains('visible')) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target); 
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
+      });
+
+      buttons.forEach(btn => observer.observe(btn));
+    });
+  </script>
+</body>
+</html>
