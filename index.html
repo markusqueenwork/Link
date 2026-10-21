@@ -19,7 +19,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #000; /* Черный фон на время загрузки видео */
+      background-color: #000;
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -32,7 +32,9 @@
     .bg-container {
       position: fixed;
       top: 0; left: 0;
-      width: 100vw; height: 100vh;
+      width: 100vw; 
+      height: 100vh;
+      height: 100dvh; /* Учитывает панели браузера на мобилках */
       z-index: -1;
       overflow: hidden;
       transform: translateZ(0);
@@ -40,12 +42,9 @@
     }
 
     .bg-video {
-      position: absolute; /* Жестко прибиваем к краям */
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; 
+      object-fit: cover; /* Растягивает видео на весь экран */
     }
 
     /* Затемнение видео, чтобы кнопки читались */
@@ -66,7 +65,7 @@
       align-items: center;
       padding: 250px 20px 60px 20px; 
       position: relative;
-      z-index: 2; /* Кнопки поверх затемнения */
+      z-index: 2;
     }
 
     h1 {
@@ -146,7 +145,6 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    /* Цвета иконок */
     .bg-twitch { background: #9146FF; color: #fff; }
     .bg-boosty { background: #f97316; color: #fff; }
     .bg-donatepay { background: #22c55e; color: #fff; }
@@ -156,7 +154,6 @@
     .bg-spotify { background: #1DB954; color: #fff; }
     .bg-apple { background: #FA243C; color: #fff; }
 
-    /* Спец. стили для картинок и SVG внутри иконок */
     .icon-wrapper img {
       width: 26px; height: 26px;
       display: block; margin: 0 auto; 
@@ -175,7 +172,6 @@
 </head>
 <body>
   
-  <!-- ВИДЕО НА ФОНЕ -->
   <div class="bg-container">
     <video 
       class="bg-video" 
@@ -186,21 +182,15 @@
       webkit-playsinline="true"
       preload="auto"
       disablepictureinpicture>
-      <!-- ИСПОЛЬЗУЕМ SOURCE ВМЕСТО SRC -->
       <source src="video.mp4" type="video/mp4">
     </video>
   </div>
 
   <div class="container">
-    
     <h1>@VoiceInsideGalaxy</h1>
-
-    <!-- Сюда скрипт вставит все кнопки из links.js -->
     <div class="links" id="links-container"></div>
-
   </div>
 
-  <!-- Подключаем файл с данными -->
   <script src="links.js"></script>
 
   <script>
