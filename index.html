@@ -227,16 +227,12 @@
           const img = document.createElement('img'); img.src = link.imgSrc; img.alt = link.name; iconDiv.appendChild(img);
         } else if (link.type === 'svg') {
           if (link.id === 'linemusic') {
-            // ИДЕАЛЬНЫЙ SVG ДЛЯ LINE MUSIC (две полоски, две ножки)
-            iconDiv.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px; fill: none; stroke: #ffffff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; display: block;">
-              <!-- Первая (верхняя) полоска -->
+            // ИДЕАЛЬНЫЙ SVG ДЛЯ LINE MUSIC (уменьшенный размер 26px)
+            iconDiv.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 26px; height: 26px; fill: none; stroke: #ffffff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; display: block;">
               <path d="M8 5 L20 2" />
-              <!-- Вторая (нижняя) полоска -->
               <path d="M8 9 L20 6" />
-              <!-- Левая ножка и кружок -->
               <path d="M8 9 V18" />
               <circle cx="5" cy="18" r="3" />
-              <!-- Правая ножка и кружок -->
               <path d="M20 6 V15" />
               <circle cx="17" cy="15" r="3" />
             </svg>`;
