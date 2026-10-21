@@ -15,41 +15,42 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: #000;
       color: #000; 
       overflow-x: hidden; 
+      /* Убираем transform у body, чтобы не ломать position: fixed */
     }
 
-    /* --- ВИДЕО ФОН НА ВЕСЬ ЭКРАН --- */
+    /* --- ВИДЕО ФОН НА ВЕСЬ ЭКРАН (ЖЕСТКО) --- */
     .bg-container {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; 
-      height: 100vh;
-      height: 100dvh; /* Для мобилок (учитывает адресную строку) */
+      
+      /* 100lvh — это МАКСИМАЛЬНАЯ высота экрана (без учета скрывающихся панелей браузера).
+         Это заставит видео быть одного размера всегда, без дерганья при скролле. */
+      height: 100vh; 
+      height: 100lvh; 
+      
       z-index: -1;
       overflow: hidden;
+      /* Ускоряем рендеринг */
+      transform: translateZ(0);
+      will-change: transform;
     }
 
     .bg-video {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Растягивает на весь экран */
+      object-fit: cover; /* Растягивает на весь экран, обрезая края */
       position: absolute;
       top: 0;
       left: 0;
     }
 
-    /* Затемнение видео */
+    /* Затемнение видео, чтобы кнопки читались */
     .bg-container::after {
       content: '';
       position: absolute;
@@ -68,7 +69,7 @@
       padding: 250px 20px 60px 20px; 
       position: relative;
       z-index: 2;
-      margin: 0 auto; /* Центрируем по горизонтали */
+      margin: 0 auto; 
     }
 
     h1 {
@@ -173,7 +174,6 @@
 </head>
 <body>
   
-  <!-- Контейнер для видео -->
   <div class="bg-container">
     <video 
       class="bg-video" 
@@ -188,7 +188,6 @@
     </video>
   </div>
 
-  <!-- Твой контент -->
   <div class="container">
     <h1>@VoiceInsideGalaxy</h1>
     <div class="links" id="links-container"></div>
@@ -229,7 +228,6 @@
         container.appendChild(a);
       });
 
-      // Логика появления
       const buttons = document.querySelectorAll('.link-btn');
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -241,7 +239,6 @@
       }, { threshold: 0.1 });
 
       buttons.forEach((btn, index) => {
-        // Небольшая задержка для красоты
         btn.style.transitionDelay = `${index * 0.1}s`;
         observer.observe(btn);
       });
